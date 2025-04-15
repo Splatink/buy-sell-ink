@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <time.h>
 
+
 struct gameItem
 {
     char itemName[10];
@@ -24,6 +25,7 @@ struct gamePlayer
     char playerName[10];
     unsigned int playerScore;
     unsigned int playerMoney;
+    unsigned totalItemsSold;
 };
 
 struct gameItem item[10] =
@@ -91,12 +93,12 @@ void gameIntro()
     printf("Please enter your player name (Max 10 characters)\n");
     scanf("%s", &player.playerName);
     player.playerMoney = 100;
-    printf("You start with %d gold! and 1 %s\n", player.playerMoney, item->itemName);
+    printf("You start with %d gold and 1 %s\n", player.playerMoney, item->itemName);
 }
 
 void printStats()
 {
-    printf("Name: %s\nGold: %d\nScore: %d\n", player.playerName, player.playerMoney, player.playerScore);
+    printf("Name: %s\nGold: %d\n", player.playerName, player.playerMoney);
 }
 
 void printInventory()
@@ -323,8 +325,9 @@ void gameTurn()
     {
         case 1:
             player.playerMoney += item[itemPicked].itemCurrentItemPrice;
-            player.playerScore += 1;
+            player.playerScore++;
             item[itemPicked].itemInInventory = false;
+            player.totalItemsSold++;
             printf("Sold!\n");
             break;
         case 2:
@@ -334,8 +337,9 @@ void gameTurn()
             if (checkCustomerWiggle(potNewItemPrice, customerPicked, itemPicked))
             {
                 player.playerMoney += item[itemPicked].itemCurrentItemPrice;
-                player.playerScore += 1;
+                player.playerScore += 2;
                 item[itemPicked].itemInInventory = false;
+                player.totalItemsSold++;
                 printf("Sold!\n");
                 break;
             }
@@ -362,12 +366,17 @@ int turnSelector()
     return turns;
 }
 
+void printExtStats()
+{
+    printf("Name: %s\nGold: %d\nScore: %d\nTotal Items Sold: %d\n", player.playerName, player.playerMoney, player.playerScore, player.totalItemsSold);
+}
+
 void gameEnd(int turns)
 {
     printf("Game End!\n");
     printf("Total turns played: %d\n", turns);
     printf("Player stats:\n");
-    printStats();
+    printExtStats();
 }
 
 int main()
