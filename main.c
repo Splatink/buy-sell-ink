@@ -25,16 +25,16 @@
 struct gameItem
 {
     char itemName[10];
-    unsigned int itemCurrentItemPrice;
-    unsigned int itemStartingPrice;
-    unsigned int itemWiggleRoom;
+    int itemCurrentItemPrice;
+    int itemStartingPrice;
+    int itemWiggleRoom;
     bool itemInInventory;
 };
 
 struct gameCustomer
 {
     char customerName[10];
-    unsigned int customerWiggleRoom; //should be a randomly generated number
+    int customerWiggleRoom; //should be a randomly generated number
     bool customerRecentlyDoneDeal;
 };
 
@@ -61,9 +61,9 @@ struct gameItem item[10] =
     {"TV", 400, 400, 20, 0},
     {"Smartphone", 0, 1200, 0, 0},
     //special items
-    {"Ink", 65, 65, 150, 0},
-    {"Weed", 12, 12, 300, 0},
-    {"Crypto", 150, 150, 500, 0}
+    {"Ink", 65, 65, 35, 0},
+    {"Weed", 12, 12, 60, 0},
+    {"Crypto", 150, 100, 500, 0}
 };
 
 struct gameCustomer customer[10] =
@@ -281,12 +281,7 @@ void buyItems()
 
 bool checkForItem(int itemPicked)
 {
-    if ((item[itemPicked].itemInInventory == true) && (itemPicked >= 7))
-    {
-        player.illegalItemsSold++; 
-        return true;
-    }
-    else if (item[itemPicked].itemInInventory == true)
+    if (item[itemPicked].itemInInventory == true)
     {
         return true;
     }
@@ -460,14 +455,22 @@ int gameUI(int itemPicked)
 
 bool checkCustomerWiggle(int potNewItemPrice, int customerPicked, int itemPicked)
 {
-    if ((rand() % customer[customerPicked].customerWiggleRoom - item[itemPicked].itemWiggleRoom) > item[itemPicked].itemCurrentItemPrice - potNewItemPrice)
-    {
-        return false;
-    }
-    else
+    int randomness = rand() % 100 + 1;
+    float wiggleness = (float)randomness / (float)customer[customerPicked].customerWiggleRoom;
+    float negotionness = ((float)potNewItemPrice - (float)item[itemPicked].itemCurrentItemPrice) / (float)item[itemPicked].itemWiggleRoom;
+    if ((potNewItemPrice - item[itemPicked].itemCurrentItemPrice) <= 0)
     {
         item[itemPicked].itemCurrentItemPrice = potNewItemPrice;
         return true;
+    }
+    else if (wiggleness <= 1 && negotionness <= 1)
+    {
+        item[itemPicked].itemCurrentItemPrice = potNewItemPrice;
+        return true;
+    }
+    else
+    {
+        return false;
     }
 }
 
@@ -478,6 +481,11 @@ void sellItem(int itemPicked)
     item[itemPicked].itemInInventory = false;
     player.totalItemsSold++;
     printf("Sold!\n\n");
+    if (itemPicked >= 7)
+    {
+        printf("You have sold an illegal item. Keep it up and the police might start asking questions");
+        player.illegalItemsSold++;
+    }
 }
 
 void negotiateItem(int itemPicked, int customerPicked)
@@ -493,6 +501,11 @@ void negotiateItem(int itemPicked, int customerPicked)
         item[itemPicked].itemInInventory = false;
         player.totalItemsSold++;
         printf("Sold!\n\n");
+        if (itemPicked >= 7)
+        {
+        printf("You have sold an illegal item. Keep it up and the police might start asking questions");
+        player.illegalItemsSold++;
+        }
     }
     else
     {
