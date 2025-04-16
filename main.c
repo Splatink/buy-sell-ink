@@ -114,6 +114,7 @@ void gameIntro()
     printf("It's simple, buy items and sell them to your customers for a profit.\n");
     printf("The game ends after your chosen amount of turns and you get a score!\n");
     printf("Please enter your player name (Max 10 characters)\n");
+    printf("Name: ");
     scanf("%s", &player.playerName);
     player.playerMoney = PLAYER_STARTING_MONEY;
     printf("You start with %d gold and 1 %s\n", player.playerMoney, item->itemName);
@@ -126,11 +127,12 @@ void printStats()
 
 void printInventory()
 {
+    printf("Inventory:\n");
     for (int i = 0; i < 10; i++)
     {
         if (item[i].itemInInventory)
         {
-            printf(item[i].itemName);
+            printf("* %s", item[i].itemName);
             printf("\n");
         }
     }
@@ -138,12 +140,11 @@ void printInventory()
 
 void printItems()
 {
-    printf("Current list of items:\n");
     int busnPrice;
     for (int i = 0; i < 10; i++)
     {
         busnPrice = item[i].itemStartingPrice / 1.5;
-        printf("N: %d I: %s P: %d Gold\n", i, item[i].itemName, busnPrice); 
+        printf("(%d) %s (%d Gold)\n", i, item[i].itemName, busnPrice); 
     }
 }
 
@@ -165,9 +166,12 @@ bool buyItem(int itemNumber)
 void buyItems()
 {
     printf("What item would you like to buy? Type X to exit\n");
+    printf("Current list of items:\n");
     printItems();
     while (true)
     {
+        printf("Selection: ");
+        while (getchar() != '\n');
         int selection = getchar();
         if (selection == 'X' || selection == 'x')
         {
@@ -248,7 +252,9 @@ void policeUI()
 {
     printf("A: Accept\nD: Decline\nS: Shoot Police\n");
     while (true)
-    {
+    {   
+        printf("Selection: ");
+        while (getchar() != '\n');
         int selection = getchar();
         switch (selection)
         {
@@ -271,6 +277,8 @@ void warrantUI()
     printf("A: Accept\nS: Shoot Police\n");
     while (true)
     {
+        printf("Selection: ");
+        while (getchar() != '\n');
         int selection = getchar();
         switch (selection)
         {
@@ -323,6 +331,8 @@ int gameUI(int itemPicked)
     printf("A: Accept\nN: Negotiate\nD: Decline\nS: Print Stats\nI: Print Inventory\nB: Buy Items\n");
     while (true)
     {
+        printf("Selection: ");
+        while (getchar() != '\n');
         int selection = getchar();
         switch (selection)
         {
@@ -350,9 +360,11 @@ int gameUI(int itemPicked)
                 return 3;
             case 'S':
                 printStats();
+                printf("A: Accept\nN: Negotiate\nD: Decline\nS: Print Stats\nI: Print Inventory\nB: Buy Items\n");
                 break;
             case 'I':
                 printInventory();
+                printf("A: Accept\nN: Negotiate\nD: Decline\nS: Print Stats\nI: Print Inventory\nB: Buy Items\n");
                 break;
             case 'B':
                 buyItems();
@@ -396,11 +408,33 @@ void sellItem(int itemPicked)
     }
 }
 
+void displayCustomerWiggleRoom(int customerPicked)
+{
+    printf("Customer Wiggle Room: ");
+    if(customer[customerPicked].customerWiggleRoom <= 25)
+    {
+        printf("*\n");
+    }
+    else if (customer[customerPicked].customerWiggleRoom <= 50)
+    {
+        printf("**\n");
+    }
+    else if (customer[customerPicked].customerWiggleRoom <= 75)
+    {
+        printf("***\n");
+    }
+    else if (customer[customerPicked].customerWiggleRoom <= 100)
+    {
+        printf("****\n");
+    }
+}
+
 void negotiateItem(int itemPicked, int customerPicked)
 {
     int potNewItemPrice;
     printf("%s: Aight, what are we talking?\n", customer[customerPicked].customerName);
-    printf("Enter desired item price:\n");
+    displayCustomerWiggleRoom(customerPicked);
+    printf("Enter desired item price: ");
     scanf("%d", &potNewItemPrice);
     if (checkCustomerWiggle(potNewItemPrice, customerPicked, itemPicked))
     {
@@ -411,8 +445,7 @@ void negotiateItem(int itemPicked, int customerPicked)
         printf("Sold!\n\n");
         if (itemPicked >= 7)
         {
-        printf("You have sold an illegal item. Keep it up and the police might start asking questions");
-        player.illegalItemsSold++;
+            player.illegalItemsSold++;
         }
     }
     else
@@ -454,7 +487,7 @@ void gameTurn()
 
 int turnSelector()
 {
-    printf("Please select amount of turns\n");
+    printf("Please select amount of turns: ");
     int turns;
     scanf("%d", &turns);
     return turns;
