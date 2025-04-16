@@ -142,16 +142,27 @@ bool buyItem(int itemNumber)
 
 void buyItems()
 {
-    printf("What item would you like to buy?\n");
+    printf("What item would you like to buy? Type X to exit\n");
     printItems();
     while (true)
     {
         int selection = getchar();
         switch (selection)
         {
+             case '0':
+                if (buyItem(0))
+                {
+                    printf("Item Bought\n");
+                    return;
+                }
+                else
+                {
+                    break;
+                } 
             case '1':
                 if (buyItem(1))
                 {
+                    printf("Item Bought\n");
                     return;
                 }
                 else
@@ -161,6 +172,7 @@ void buyItems()
             case '2':
                 if (buyItem(2))
                 {
+                    printf("Item Bought\n");
                     return;
                 }
                 else
@@ -170,6 +182,7 @@ void buyItems()
             case '3':
                 if (buyItem(3))
                 {
+                    printf("Item Bought\n");
                     return;
                 }
                 else
@@ -179,6 +192,7 @@ void buyItems()
             case '4':
                 if (buyItem(4))
                 {
+                    printf("Item Bought\n");
                     return;
                 }
                 else
@@ -188,6 +202,7 @@ void buyItems()
             case '5':
                 if (buyItem(5))
                 {
+                    printf("Item Bought\n");
                     return;
                 }
                 else
@@ -197,6 +212,7 @@ void buyItems()
             case '6':
                 if (buyItem(6))
                 {
+                    printf("Item Bought\n");
                     return;
                 }
                 else
@@ -206,6 +222,7 @@ void buyItems()
             case '7':
                 if (buyItem(7))
                 {
+                    printf("Item Bought\n");
                     return;
                 }
                 else
@@ -215,6 +232,7 @@ void buyItems()
             case '8':
                 if (buyItem(8))
                 {
+                    printf("Item Bought\n");
                     return;
                 }
                 else
@@ -224,6 +242,7 @@ void buyItems()
             case '9':
                 if (buyItem(9))
                 {
+                    printf("Item Bought\n");
                     return;
                 }
                 else
@@ -231,15 +250,9 @@ void buyItems()
                     break;
                 }
             case 'X':
-                if (buyItem(10))
-                {
-                    return;
-                }
-                else
-                {
-                    break;
-                }
+                return;
         }
+        
     }   
 }
 
@@ -293,7 +306,6 @@ int gameUI(int itemPicked)
                 break;
             case 'B':
                 buyItems();
-                printf("Item Bought\n");
                 printf("A: Accept\nN: Negotiate\nD: Decline\nS: Print Stats\nI: Print Inventory\nB: Buy Items\n");
                 break;
         }
