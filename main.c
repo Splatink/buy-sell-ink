@@ -23,9 +23,14 @@ struct gameCustomer
 struct gamePlayer
 {
     char playerName[10];
-    unsigned int playerScore;
-    unsigned int playerMoney;
-    unsigned totalItemsSold;
+    int playerScore;
+    int playerMoney;
+    int totalItemsSold;
+    int illegalItemsSold;
+    bool warrantForArrest;
+    bool gameForceEnd;
+    bool playerNotified;
+    bool gameKilled;
 };
 
 struct gameItem item[10] =
@@ -38,7 +43,7 @@ struct gameItem item[10] =
     {"TV", 400, 400, 20, 0},
     {"Smartphone", 0, 1200, 0, 0},
     //special items
-    {"Snake Oil", 65, 65, 150, 0},
+    {"Ink", 65, 65, 150, 0},
     {"Weed", 12, 12, 300, 0},
     {"Crypto", 150, 150, 500, 0}
 };
@@ -258,13 +263,136 @@ void buyItems()
 
 bool checkForItem(int itemPicked)
 {
-    if (item[itemPicked].itemInInventory == true)
+    if ((item[itemPicked].itemInInventory == true) && (itemPicked >= 7))
+    {
+        player.illegalItemsSold++; 
+        return true;
+    }
+    else if (item[itemPicked].itemInInventory == true)
     {
         return true;
     }
     else
     {
         return false;
+    }
+}
+
+void policeAccept()
+{
+    printf("You were arrested by the police and issued a 400$ fine\n");
+    player.playerMoney -= 400;
+    player.illegalItemsSold = 0;
+}
+
+void policeDecline()
+{
+    int randomness = rand() % 100 + 1;
+    if (randomness < 50)
+    {
+            printf("You have been arrested by the police and have been fined 400$, and an additional 500$ for resisting arrest\n");
+            player.playerMoney -= 500;
+            player.illegalItemsSold = 0;
+            return;
+    }
+    else
+    {
+        printf("Alright then, since we have no evidence we will get a warrant\n");
+        player.warrantForArrest = true;
+        return;
+    }
+}
+
+void policeShoot()
+{
+    int randomness = rand() % 100 + 1;
+    if (randomness < 80)
+    {
+            printf("You were shot and killed buy the police\n");
+            player.gameForceEnd = true;
+            player.gameKilled = true;
+            return;
+    }
+    else
+    {
+        printf("You shot and killed the police, you escaped this time\n");
+        player.illegalItemsSold = 0;
+        return;
+    }
+
+}
+
+void policeUI()
+{
+    printf("A: Accept\nD: Decline\nS: Shoot Police\n");
+    while (true)
+    {
+        int selection = getchar();
+        switch (selection)
+        {
+            case 'A':
+                policeAccept();
+                return;
+            case 'D':
+                policeDecline();
+                return;
+            case 'S':
+                policeShoot();
+                return;
+        }
+    }
+
+}
+
+void warrantUI()
+{
+    printf("A: Accept\nS: Shoot Police\n");
+    while (true)
+    {
+        int selection = getchar();
+        switch (selection)
+        {
+            case 'A':
+                policeAccept();
+                return;
+            case 'S':
+                policeShoot();
+                return;
+        }
+    }
+}
+
+void checkPolice()
+{
+    if (player.warrantForArrest)
+    {
+        printf("Police: %s, WE HAVE A WARRANT FOR YOUR ARREST. PUT YOUR HANDS BEHIND YOUR BACK AND INTERLOCK YOUR FINGERS\n", player.playerName);
+        warrantUI();
+        return;
+    }
+    if (player.illegalItemsSold == 1 && player.playerNotified == false)
+    {
+        printf("You have sold an illegal item, if you keep this up the police might start asking questions\n");
+        player.playerNotified = true;
+    }
+    else if (player.illegalItemsSold > 2)
+    {
+        printf("Police: You seem to be selling contraband, you are under arrest!\n");
+        policeUI();
+    }
+}
+
+void checkMoney()
+{
+    if (player.playerMoney <= 0)
+    {
+        printf("You have no money, you lose unless you can sell your inventory\n");
+        player.playerMoney = 0;
+        player.gameForceEnd = true;
+    }
+    else
+    {
+        player.gameForceEnd = false;
     }
 }
 
@@ -327,11 +455,17 @@ bool checkCustomerWiggle(int potNewItemPrice, int customerPicked, int itemPicked
 
 void gameTurn()
 {
+    checkPolice();
+    if (player.gameKilled)
+    {
+        return;
+    }
+    checkMoney();
     int customerPicked = rand() % 10;
     int itemPicked = rand() % 10;
     int potNewItemPrice;
     item[itemPicked].itemCurrentItemPrice = item[itemPicked].itemStartingPrice; //reset item prices for negotiation; stupid solution
-    printf("%s: I need a %s, willing to pay %d gold for it.\n", customer[customerPicked].customerName, item[itemPicked].itemName, item[itemPicked].itemCurrentItemPrice);
+    printf("%s: I need %s, willing to pay %d gold for it.\n", customer[customerPicked].customerName, item[itemPicked].itemName, item[itemPicked].itemCurrentItemPrice);
     int selection = gameUI(itemPicked);
     switch (selection)
     {
@@ -395,11 +529,19 @@ int main()
 {
     initCustomers();
     gameIntro();
+    int turns;
     int numOfTurns = turnSelector();
-    for (int i = 0; i < numOfTurns; i++)
+    for (turns = 0; turns < numOfTurns; turns++)
     {
-        gameTurn();
+        if (player.gameForceEnd)
+        {
+            break;
+        }
+        else
+        {
+            gameTurn();
+        }
     }
-    gameEnd(numOfTurns);
+    gameEnd(turns);
     return 0;
 }
