@@ -4,7 +4,7 @@
 #include <time.h>
 
 //values below control random item/customer selections, change for debugging (illegal items only 7-9, default 0-9)
-#define ITEM_LOWER_BOUND 7
+#define ITEM_LOWER_BOUND 0
 #define ITEM_UPPER_BOUND 9
 #define CUSTOMER_LOWER_BOUND 0
 #define CUSTOMER_UPPER_BOUND 9
