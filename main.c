@@ -392,7 +392,6 @@ void sellItem(int itemPicked)
     printf("Sold!\n\n");
     if (itemPicked >= 7)
     {
-        printf("You have sold an illegal item. Keep it up and the police might start asking questions");
         player.illegalItemsSold++;
     }
 }
