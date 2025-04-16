@@ -158,7 +158,6 @@ bool buyItem(int itemNumber)
     }
     else
     {
-        printf("You already have this item or you can't afford it\n");
         return false;
     }
 }
@@ -170,112 +169,22 @@ void buyItems()
     while (true)
     {
         int selection = getchar();
-        switch (selection)
+        if (selection == 'X' || selection == 'x')
         {
-             case '0':
-                if (buyItem(0))
-                {
-                    printf("Item Bought\n");
-                    return;
-                }
-                else
-                {
-                    break;
-                } 
-            case '1':
-                if (buyItem(1))
-                {
-                    printf("Item Bought\n");
-                    return;
-                }
-                else
-                {
-                    break;
-                }
-            case '2':
-                if (buyItem(2))
-                {
-                    printf("Item Bought\n");
-                    return;
-                }
-                else
-                {
-                    break;
-                }
-            case '3':
-                if (buyItem(3))
-                {
-                    printf("Item Bought\n");
-                    return;
-                }
-                else
-                {
-                    break;
-                }
-            case '4':
-                if (buyItem(4))
-                {
-                    printf("Item Bought\n");
-                    return;
-                }
-                else
-                {
-                    break;
-                }
-            case '5':
-                if (buyItem(5))
-                {
-                    printf("Item Bought\n");
-                    return;
-                }
-                else
-                {
-                    break;
-                }
-            case '6':
-                if (buyItem(6))
-                {
-                    printf("Item Bought\n");
-                    return;
-                }
-                else
-                {
-                    break;
-                }
-            case '7':
-                if (buyItem(7))
-                {
-                    printf("Item Bought\n");
-                    return;
-                }
-                else
-                {
-                    break;
-                }
-            case '8':
-                if (buyItem(8))
-                {
-                    printf("Item Bought\n");
-                    return;
-                }
-                else
-                {
-                    break;
-                }
-            case '9':
-                if (buyItem(9))
-                {
-                    printf("Item Bought\n");
-                    return;
-                }
-                else
-                {
-                    break;
-                }
-            case 'X':
-                return;
+            return;
         }
-        
+        if (selection >= '0' && selection <= '9')
+        {
+            int index = selection - '0';
+            if(buyItem(index))
+            {
+                printf("Item bought\n");
+            }
+            else
+            {
+                printf("You already have this item or you can't afford it\n");
+            }
+        }
     }   
 }
 
