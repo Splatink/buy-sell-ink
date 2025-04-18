@@ -16,8 +16,10 @@
 //values below control the police fines, and when they will get suspicous or attempt to arrest the player
 #define POLICE_FINE_NORMAL 400
 #define POLICE_FINE_INCREASE 100
+#define POLICE_FINE_WARRANT 600
 #define POLICE_WARNING 1 //warn at X amount of illegal items sold
 #define POLICE_ARREST 3 //attempt arrest at X amount of illegal items sold
+#define POLICE_WARRANT 4 //execute arrest with warrant at X amount of illegal items sold
 
 //values below control how the player starts the game, default is 100 gold and 1 banana
 #define PLAYER_STARTING_MONEY 100
@@ -206,8 +208,16 @@ bool checkForItem(int itemPicked)
 
 void policeAccept()
 {
-    printf("You were arrested by the police and issued a %d gold fine\n");
-    player.playerMoney -= POLICE_FINE_NORMAL;
+    if(player.warrantForArrest)
+    {
+       player.playerMoney -= POLICE_FINE_WARRANT;
+       printf("You were arrested by the police and issued a hefty %d gold fine\n", POLICE_FINE_WARRANT);
+    }
+    else
+    {
+        player.playerMoney -= POLICE_FINE_NORMAL;
+        printf("You were arrested by the police and issued a %d gold fine\n", POLICE_FINE_NORMAL);
+    }
     player.illegalItemsSold = 0;
 }
 
@@ -284,9 +294,11 @@ void warrantUI()
         {
             case 'A':
                 policeAccept();
+                player.warrantForArrest = false;
                 return;
             case 'S':
                 policeShoot();
+                player.warrantForArrest = false;
                 return;
         }
     }
@@ -294,7 +306,7 @@ void warrantUI()
 
 void checkPolice()
 {
-    if (player.warrantForArrest)
+    if (player.warrantForArrest && player.illegalItemsSold >= POLICE_WARRANT)
     {
         printf("Police: %s, WE HAVE A WARRANT FOR YOUR ARREST. PUT YOUR HANDS BEHIND YOUR BACK AND INTERLOCK YOUR FINGERS\n", player.playerName);
         warrantUI();
@@ -305,7 +317,7 @@ void checkPolice()
         printf("You have sold an illegal item, if you keep this up the police might start asking questions\n");
         player.playerNotified = true;
     }
-    else if (player.illegalItemsSold >= POLICE_ARREST)
+    else if (player.illegalItemsSold >= POLICE_ARREST && player.warrantForArrest == false)
     {
         printf("Police: You seem to be selling contraband, you are under arrest!\n");
         policeUI();

@@ -12,7 +12,7 @@ If you are successful at negotiating you get 2 points. Lose the negotiation howe
 Don't have it? Buy it. You buy items at half the price.  
 
 
-But be careful! Items 7-9 (Ink, Weed and Crypto) are illegal! Sell them and the police will get suspicous. If you keep it up you might get arrested and give a hefty fine, unless...  
+But be careful! Items 7-9 (Ink, Weed and Crypto) are illegal! Sell them and the police will get suspicious. If you keep it up you might get arrested and give a hefty fine, unless...  
 
 Illegal items are very negotiable in their price making them much more profitable. Sometimes they may be worth the risk.  
 
